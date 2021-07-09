@@ -4,7 +4,7 @@
  * 
  * Created on 24 marzo 2015, 17.31
  */
-#include <SDL/SDL_ttf.h>
+#include <SDL2/SDL_ttf.h>
 
 #include "Primitives.h"
 

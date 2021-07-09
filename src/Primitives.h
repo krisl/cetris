@@ -5,9 +5,9 @@
  * Created on 24 marzo 2015, 17.31
  */
 #include <iostream>
-#include <SDL/SDL.h>
-#include <SDL/SDL_opengl.h>
-#include <SDL/SDL_ttf.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_opengl.h>
+#include <SDL2/SDL_ttf.h>
 
 #ifndef PRIMITIVES_H
 #define	PRIMITIVES_H

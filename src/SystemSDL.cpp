@@ -8,10 +8,10 @@
 
 #include <stdio.h>
 #include <string>
-#include <SDL/SDL.h>
-#include <SDL/SDL_ttf.h>
-#include <SDL/SDL_opengl.h>
-#include <SDL/SDL_mixer.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_opengl.h>
+#include <SDL2/SDL_mixer.h>
 
 #include "SystemSDL.h"
 #include "utils.h"
@@ -42,28 +42,43 @@ bool SystemSDL::init() {
     }
 
     //Set caption
-    SDL_WM_SetCaption( "Cetris", NULL );
+    //SDL_WM_SetCaption( "Cetris", NULL );
     SDL_Surface *icon = SDL_LoadBMP(data("data/icon.bmp").c_str());
     if(icon == NULL) {
          printf("Icon load error: %s\n", SDL_GetError());
     } else {
-        SDL_SetColorKey ( icon , SDL_SRCCOLORKEY, 
+        SDL_SetColorKey ( icon , SDL_TRUE, 
                 SDL_MapRGB( icon->format, 255, 0, 255) );
     } 
     
-    SDL_WM_SetIcon(icon, NULL);
     
 
-    if( SDL_SetVideoMode( width, height, bpp, SDL_OPENGL | SDL_RESIZABLE) == NULL )
+    //if( SDL_SetVideoMode( width, height, bpp, SDL_OPENGL | SDL_RESIZABLE) == NULL )
+    screen = SDL_CreateWindow("Cetris", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+    if (screen == nullptr)
       { return false; }
 
+    //SDL_WM_SetIcon(icon, NULL);
+    SDL_SetWindowIcon(screen, icon);
+    SDL_Renderer *renderer = SDL_CreateRenderer(screen, -1, 0);
+
     //Initialize OpenGL
+    SDL_GLContext glcontext = SDL_GL_CreateContext(screen);
 
 	glClearColor(0, 0, 0, 0);
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(45.0, ((float)width/(float)height), 0.1, 1000.0);
+	//gluPerspective(45.0, ((float)width/(float)height), 0.1, 1000.0); // FIXME
+    auto fovY = 45.0;
+    auto zNear = 0.1;
+    auto aspect = ((float)width/(float)height);
+    auto zFar = 1000.0;
+
+    const GLdouble pi = 3.1415926535897932384626433832795;
+    auto fH = tan( (fovY / 2) / 180 * pi ) * zNear;
+    auto fW = fH * aspect;
+    glFrustum(-fW, fW, -fH, fH, zNear, zFar);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -92,7 +107,8 @@ bool SystemSDL::init() {
     //Check for error
     GLenum error = glGetError();
     if( error != GL_NO_ERROR ) {
-      printf("Error initializing OpenGL! %s\n", gluErrorString(error));
+      std::cout << "EEEEEEEEEERRRRRRRRRRRRRRRRRRRRRRRRROOOOOOOOOOOOOOOOOORRRRRRRRRRRRRRRRRRRR\n";
+      //printf("Error initializing OpenGL! %s\n", gluErrorString(error)); // FIXME
       return false;
     }
     
@@ -137,7 +153,7 @@ void SystemSDL::loop() {
         Game->render();
 
         //Update screen
-        SDL_GL_SwapBuffers();
+        SDL_GL_SwapWindow(screen);
         
         timer = SDL_GetTicks() - timer;
         dt = (float)(timer) /1000;
@@ -155,15 +171,16 @@ void SystemSDL::eventUpdate() {
             Game->keyrelased(event);
         }
 
-        if(event.type == SDL_VIDEORESIZE) {
-            width = event.resize.w;
-            height = event.resize.h;
-            SDL_SetVideoMode( width, height, bpp, SDL_OPENGL | SDL_RESIZABLE );
+        if(event.type == SDL_WINDOWEVENT_RESIZED) {
+            std::cout << "Get resize\n";
+            width = event.window.data1;
+            height = event.window.data2;
+            //SDL_SetVideoMode( width, height, bpp, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE ); //FIXME
             glViewport(0,0,width,height);
 
             glMatrixMode(GL_PROJECTION);
             glLoadIdentity();
-            gluPerspective(45.0, ((float)width/(float)height), 0.1, 1000.0);
+            //gluPerspective(45.0, ((float)width/(float)height), 0.1, 1000.0); // FIXME
 
             glMatrixMode(GL_MODELVIEW);
             glLoadIdentity();

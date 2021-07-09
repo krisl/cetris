@@ -9,7 +9,7 @@
 #define	SCOREDRAW_H
 
 #include <string>
-#include <SDL/SDL_ttf.h>
+#include <SDL2/SDL_ttf.h>
 
 class ScoreDraw {
 public:

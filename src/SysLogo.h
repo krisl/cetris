@@ -6,7 +6,7 @@
 #define SYSLOGO_H
 
 #include <list>
-#include <SDL/SDL_mixer.h>
+#include <SDL2/SDL_mixer.h>
 #include "Primitives.h"
 #include "Cube3d.h"
 

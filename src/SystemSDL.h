@@ -37,7 +37,7 @@ private:
     SysGame *Game;
 
     std::string *path;
-
+    SDL_Window * screen;
 };
 
 #endif	/* SYSTEMGL_H */

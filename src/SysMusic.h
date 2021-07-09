@@ -5,7 +5,7 @@
 #ifndef SYSMUSIC_H
 #define SYSMUSIC_H
 
-#include <SDL/SDL_mixer.h>
+#include <SDL2/SDL_mixer.h>
 #include "SysTetris.h"
 #include "BackgroundField.h"
 

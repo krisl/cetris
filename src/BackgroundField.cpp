@@ -5,7 +5,7 @@
  * Created on 13 aprile 2015, 21.47
  */
 #include <iostream>
-#include <GL/gl.h>
+#include <OpenGL/gl.h>
 #include "BackgroundField.h"
 
 BackgroundField::BackgroundField(int nCubes) {
